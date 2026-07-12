@@ -51,6 +51,10 @@ MANDOUB_TEMPLATE = """
                     {% endif %}
                 </p>
 
+                <form action="/toggle_status/{{ order_id }}" method="POST" style="margin-top: 10px;">
+                    <button type="submit" style="background-color: #64748b; font-size: 14px; padding: 8px;">🔄 تغيير حالة الدفع يدوياً</button>
+                </form>
+
                 <p style="margin-top:20px; font-weight:bold; color:#4b5563;">دع العميل يمسح الكود لإتمام الدفع:</p>
                 <img class="qr-img" src="data:image/png;base64,{{ qr_data }}" alt="QR Code الدفع">
             </div>

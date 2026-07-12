@@ -13,7 +13,7 @@ def index():
     order_id = ""
     if request.method == 'POST':
         order_id = request.form.get('order_id')
-        with open('data.csv', mode='r') as f:
+        with open('data.csv', mode='r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for row in reader:
                 if row['order_id'] == order_id:
@@ -34,7 +34,7 @@ def index():
 @app.route('/pay/client/<order_id>')
 def client_pay(order_id):
     price = ""
-    with open('data.csv', mode='r') as f:
+    with open('data.csv', mode='r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
             if row['order_id'] == order_id: price = row['price']; break
@@ -45,6 +45,16 @@ def client_pay(order_id):
 def confirm_pay(order_id):
     payment_status[order_id] = True
     return redirect(url_for('client_pay', order_id=order_id))
+
+@app.route('/toggle_status/<order_id>', methods=['POST'])
+def toggle_status(order_id):
+    # تبديل الحالة الحالية
+    current_status = payment_status.get(order_id, False)
+    payment_status[order_id] = not current_status
+    # إعادة التوجيه لصفحة المندوب مع عرض نفس الشحنة
+    # ملاحظة: لإظهار البيانات بعد إعادة التوجيه، سنقوم بمحاكاة طلب POST أو تعديل بسيط
+    # للتبسيط، سنعيد التوجيه للجذر، وعلى المندوب البحث مرة أخرى، أو يمكن تحسينها.
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)

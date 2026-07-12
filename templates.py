@@ -36,6 +36,10 @@ MANDOUB_TEMPLATE = """
             <input type="text" id="order_id" name="order_id" value="{{ order_id }}" placeholder="مثال: 101" required>
             <button type="submit">توليد رمز الدفع (QR Code)</button>
         </form>
+        
+        <div style="margin-top: 20px;">
+            <a href="/report" style="color: #1e3a8a; text-decoration: none; font-weight: bold; border: 1px solid #1e3a8a; padding: 8px 15px; border-radius: 6px;">📊 عرض التقرير اليومي</a>
+        </div>
 
         {% if success %}
             <div class="success-box">
@@ -100,6 +104,62 @@ CLIENT_TEMPLATE = """
             </form>
             <p style="font-size: 12px; color: #9ca3af; margin-top: 15px;">🔒 اتصال آمن ومحمي بالكامل بنظام أمان.</p>
         {% endif %}
+    </div>
+</body>
+</html>
+"""
+
+REPORT_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التقرير اليومي - نظام أمان</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 800px; background: white; margin: 20px auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #1e3a8a; text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
+        th { background-color: #1e3a8a; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .status-badge { padding: 5px 10px; border-radius: 15px; font-weight: bold; font-size: 14px; }
+        .paid { background-color: #dcfce7; color: #15803d; }
+        .unpaid { background-color: #fef3c7; color: #d97706; }
+        .back-link { display: block; margin-top: 20px; text-align: center; color: #1e3a8a; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 التقرير اليومي للشحنات</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>رقم الشحنة</th>
+                    <th>اسم العميل</th>
+                    <th>المبلغ</th>
+                    <th>حالة الدفع</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.order_id }}</td>
+                    <td>{{ order.customer_name }}</td>
+                    <td>{{ order.price }} ج.م</td>
+                    <td>
+                        {% if order.paid %}
+                            <span class="status-badge paid">تم الدفع</span>
+                        {% else %}
+                            <span class="status-badge unpaid">لم يتم الدفع</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="/" class="back-link">⬅️ العودة للرئيسية</a>
     </div>
 </body>
 </html>

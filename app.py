@@ -48,13 +48,21 @@ def confirm_pay(order_id):
 
 @app.route('/toggle_status/<order_id>', methods=['POST'])
 def toggle_status(order_id):
-    # تبديل الحالة الحالية
     current_status = payment_status.get(order_id, False)
     payment_status[order_id] = not current_status
-    # إعادة التوجيه لصفحة المندوب مع عرض نفس الشحنة
-    # ملاحظة: لإظهار البيانات بعد إعادة التوجيه، سنقوم بمحاكاة طلب POST أو تعديل بسيط
-    # للتبسيط، سنعيد التوجيه للجذر، وعلى المندوب البحث مرة أخرى، أو يمكن تحسينها.
     return redirect(url_for('index'))
+
+@app.route('/report')
+def report():
+    orders = []
+    with open('data.csv', mode='r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            row['paid'] = payment_status.get(row['order_id'], False)
+            orders.append(row)
+    
+    from templates import REPORT_TEMPLATE
+    return render_template_string(REPORT_TEMPLATE, orders=orders)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)

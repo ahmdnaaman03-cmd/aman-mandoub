@@ -22,6 +22,11 @@ MANDOUB_TEMPLATE = """
         .paid { background-color: #dcfce7; color: #15803d; }
         .unpaid { background-color: #fef3c7; color: #d97706; }
     </style>
+    <meta property="og:title" content="Aman Mandoub System | Secure Representative Portal">
+    <meta property="og:description" content="A smart web application to secure and facilitate financial collection for representatives via dynamic QR Codes.">
+    <meta property="og:image" content="http://Ahmdnoaman.pythonanywhere.com/static/og-image.png">
+    <meta property="og:url" content="http://Ahmdnoaman.pythonanywhere.com">
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="container">

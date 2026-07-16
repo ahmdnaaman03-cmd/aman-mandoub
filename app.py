@@ -6,7 +6,7 @@ app = Flask(__name__)
 payment_status = {}
 
 # ضع الرابط الدائم الجديد هنا بعد الرفع:
-GLOBAL_URL = "https://aman-mandoub.koyeb.app" 
+GLOBAL_URL = "https://ahmdnoaman.pythonanywhere.com" 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():

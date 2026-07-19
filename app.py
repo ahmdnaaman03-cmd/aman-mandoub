@@ -50,7 +50,7 @@ def index():
     conn = get_db_connection()
     orders = conn.execute('SELECT * FROM orders').fetchall()
     conn.close()
-    return jsonify([dict(order) for order in orders])
+    return render_template("index.html")
 
 @app.route('/delegate/<order_id>')
 def delegate_view(order_id):

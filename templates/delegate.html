@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أمان المندوب - شاشة التحصيل</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f9; margin-top: 50px; }
+        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: inline-block; }
+        .status { font-weight: bold; color: #ff9800; padding: 5px 10px; border-radius: 5px; background: #fff3e0;}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>رقم الشحنة: {{ order_id }}</h2>
+        <p>حالة الدفع: <span class="status">{{ status }}</span></p>
+        <hr>
+        <h3>امسح الكود التالي لدفع القيمة</h3>
+        <!-- نستخدم واجهة برمجة تطبيقات (API) لتوليد الـ QR Code فورياً من الرابط المشفر -->
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ secure_qr_url }}" alt="QR Code">
+    </div>
+</body>
+</html>

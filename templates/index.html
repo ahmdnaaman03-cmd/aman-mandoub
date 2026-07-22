@@ -3,125 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أمان المندوب - بوابة التحصيل</title>
+    <title>أمان المندوب - تحصيل الدفعات</title>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; background: #f8f9fa; margin: 0; padding: 20px 15px; direction: rtl; }
-        .card { background: white; max-width: 420px; margin: 0 auto; padding: 30px 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; }
-        h2 { font-size: 22px; color: #111; margin: 0 0 25px 0; font-weight: 700; }
-        input { padding: 16px; width: 100%; box-sizing: border-box; margin-bottom: 15px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 16px; text-align: center; outline: none; }
-        input:focus { border-color: #008060; box-shadow: 0 0 0 2px rgba(0,128,96,0.1); }
-        .btn-main { padding: 16px; background: #008060; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer; transition: 0.2s; }
-        .btn-main:active { background: #006e52; }
-        
-        /* أزرار المعلومات السفلية */
-        .info-links { margin-top: 25px; display: flex; justify-content: center; gap: 15px; }
-        .info-btn { background: none; border: none; color: #4b5563; font-size: 14px; font-weight: 600; text-decoration: underline; cursor: pointer; padding: 5px; }
-        
-        /* النوافذ المنبثقة (Modals) */
-        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
-        .modal-content { background-color: #fff; margin: 15% auto; padding: 25px; border-radius: 12px; width: 85%; max-width: 500px; max-height: 70vh; overflow-y: auto; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
-        .modal-title { font-size: 18px; font-weight: bold; color: #111; margin: 0; }
-        .close-btn { color: #888; font-size: 24px; font-weight: bold; cursor: pointer; border: none; background: none; padding: 0; }
-        
-        /* تنسيق المحتوى داخل النوافذ */
-        .faq-item { margin-bottom: 20px; }
-        .faq-q { font-size: 14px; font-weight: bold; color: #1a1a1a; margin-bottom: 5px; display: flex; align-items: flex-start; gap: 8px; }
-        .faq-q::before { content: "▪"; color: #008060; }
-        .faq-a { font-size: 13px; color: #4b5563; line-height: 1.6; padding-right: 15px; }
-        
-        .guide-step { margin-bottom: 15px; padding: 12px; background: #f8f9fa; border-radius: 8px; border-right: 4px solid #008060; }
-        .step-title { font-size: 14px; font-weight: bold; color: #111; margin-bottom: 4px; }
-        .step-desc { font-size: 13px; color: #555; line-height: 1.5; }
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #f4f6f8; margin: 0; padding: 20px; direction: rtl; }
+        .container { max-width: 480px; margin: 0 auto; background: #ffffff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center; }
+        .logo { max-width: 80px; margin-bottom: 10px; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h2, h3 { color: #1a252f; margin-top: 0; }
+        .form-group { margin-bottom: 15px; text-align: right; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #333; }
+        input[type="text"] { width: 100%; padding: 12px; border: 1px solid #cccccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 12px; background-color: #27ae60; color: #ffffff; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        button:hover { background-color: #219150; }
+        #qrResult { text-align: center; margin-top: 20px; min-height: 50px; }
+        .section-box { margin-top: 25px; border-top: 2px solid #eeeeee; padding-top: 15px; text-align: right; }
+        .faq-item { background: #f9f9f9; padding: 12px; border-radius: 6px; margin-bottom: 10px; border-right: 4px solid #27ae60; }
+        .faq-question { font-weight: bold; color: #2c3e50; margin-bottom: 4px; font-size: 15px; }
+        .faq-answer { color: #555555; font-size: 13px; margin: 0; line-height: 1.5; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>نظام أمان المندوب</h2>
-        <input type="text" id="orderInput" placeholder="أدخل رقم الشحنة (مثال: 1001)">
-        <button class="btn-main" onclick="processOrder()">توليد الـ QR Code</button>
+<div class="container">
+    <img src="{{ url_for('static', filename='og-image.png') }}" alt="شعار أمان المندوب" class="logo">
+    <h2>أمان المندوب 🛡️</h2>
+    <p style="color:#666; font-size:14px;">توليد كيو آر كود الدفع السريع للعملاء</p>
 
-        <div class="info-links">
-            <button class="info-btn" onclick="openModal('guideModal')">دليل الاستخدام</button>
-            <button class="info-btn" onclick="openModal('faqModal')">الأسئلة الشائعة والأمان</button>
-        </div>
+    <div class="form-group">
+        <label for="orderId">رقم الطلب:</label>
+        <input type="text" id="orderId" placeholder="أدخل الرقم (مثال: 1001)" required>
     </div>
-    <!-- نافذة الأسئلة الشائعة -->
-    <div id="faqModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">الأسئلة الشائعة وتأكيد الأمان</h3>
-                <button class="close-btn" onclick="closeModal('faqModal')">&times;</button>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-q">أين تذهب أموال التحصيل؟ هل تمر عبر نظامكم؟</div>
-                <div class="faq-a">نظامنا لا يلمس الأموال مطلقاً. تتم عملية الدفع مباشرة على سيرفرات بوابة الدفع الرسمية المربوطة بمتجرك، وتدخل الأموال في حسابك البنكي مباشرة. دورنا يقتصر على ربط المندوب بالبوابة لحظياً.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-q">هل بيانات بطاقات العملاء البنكية آمنة؟</div>
-                <div class="faq-a">نعم، متوافقة مع معايير PCI-DSS. النظام لا يعالج أو يخزن أي بيانات حساسة. العميل يدخل بياناته في واجهة الدفع المشفرة (256-bit SSL) التابعة لمتجرك.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-q">هل يحتاج المندوب لأجهزة POS أو إنترنت سريع؟</div>
-                <div class="faq-a">لا، النظام يلغي الحاجة لشراء أو صيانة ماكينات POS مكلفة. يعمل النظام بكفاءة تامة من أي متصفح هاتف ذكي عادي باستخدام باقة إنترنت بسيطة (3G/4G).</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-q">هل يمكن للمندوب التلاعب بقيمة الفاتورة؟</div>
-                <div class="faq-a">مستحيل. النظام يجلب القيمة النهائية والمعتمدة من قاعدة بيانات متجر Shopify مباشرة بناءً على رقم الطلب المشفر في الـ QR Code.</div>
-            </div>
-        </div>
-    </div>
+    <button onclick="generateQR()">توليد الـ QR Code</button>
 
-    <!-- نافذة دليل الاستخدام -->
-    <div id="guideModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">دليل التشغيل الاحترافي</h3>
-                <button class="close-btn" onclick="closeModal('guideModal')">&times;</button>
-            </div>
+    <div id="qrResult"></div>
 
-            <div class="guide-step">
-                <div class="step-title">الخطوة الأولى: التجهيز التقني (للمتاجر)</div>
-                <div class="step-desc">تأكد من تفعيل بوابة الدفع الخاصة بك على متجر Shopify. سيتم تزويدك برابط Webhook مخصص لمتجرك لضمان المزامنة اللحظية لحالات الطلبات.</div>
-            </div>
-            <div class="guide-step">
-                <div class="step-title">الخطوة الثانية: عملية التحصيل (للمندوب)</div>
-                <div class="step-desc">عند وصول المندوب للعميل، يقوم بفتح هذه البوابة من هاتفه، وإدخال رقم الشحنة (مثال: 1001) ليقوم النظام بتوليد QR Code فريد وخاص بهذه الفاتورة فقط.</div>
-            </div>
-            <div class="guide-step">
-                <div class="step-title">الخطوة الثالثة: الدفع اللحظي (للعميل)</div>
-                <div class="step-desc">يقوم العميل بمسح الكود بكاميرا هاتفه الشخصي، ليتم توجيهه مباشرة إلى صفحة الدفع الآمنة الخاصة بمتجرك لإتمام العملية بإحدى البطاقات المعتمدة.</div>
-         </div>
-        <div class="guide-step">
-            <div class="step-title">الخطوة الرابعة: التحديث الآلي (للنظام)</div>
-            <div class="step-desc">فور نجاح الدفع، يتواصل نظامنا مع متجر Shopify ويقوم بتحديث حالة الطلب إلى (Paid) تلقائياً، لتأكيد الاستلام لدى الإدارة والمندوب في نفس الثانية.</div>
-        </div>
+    <div class="section-box">
+        <h3>📖 طريقة الاستخدام</h3>
+        <ol style="padding-right: 20px; color: #444; line-height: 1.6; font-size: 14px;">
+            <li>أدخل رقم الطلب في الخانة أعلاه.</li>
+            <li>اضغط على زر <b>"توليد الـ QR Code"</b>.</li>
+            <li>اعرض الكود للعميل ليقوم بمسحه والدفع.</li>
+        </ol>
     </div>
 </div>
 
 <script>
-    // دوال النوافذ المنبثقة
-    function openModal(id) { document.getElementById(id).style.display = "block"; }
-    function closeModal(id) { document.getElementById(id).style.display = "none"; }
-    window.onclick = function(event) {
-        if (event.target.className === 'modal') {
-            event.target.style.display = "none";
-        }
+function generateQR() {
+    const orderInput = document.getElementById('orderId').value.trim();
+    const qrResult = document.getElementById('qrResult');
+    if (!orderInput) {
+        qrResult.innerHTML = '<p style="color:#d9534f; font-weight:bold;">يرجى إدخال رقم الطلب أولاً</p>';
+        return;
     }
-
-    // معالجة رقم الطلب والتحويل
-    function processOrder() {
-        let val = document.getElementById('orderInput').value.trim();
-        if(!val) return alert('برجاء إدخال رقم الشحنة');
-        
-        if(!val.toUpperCase().startsWith('ORD')) {
-            val = 'ORD' + val;
+    qrResult.innerHTML = '<p style="color:#666;">جاري توليد الكود...</p>';
+    fetch('/generate_qr', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'order_id=' + encodeURIComponent(orderInput)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.qr_image) {
+            qrResult.innerHTML = `<img src="${data.qr_image}" alt="QR" style="max-width:200px; margin-top:10px;"><p style="color:#27ae60; font-weight:bold;">تم بنجاح!</p>`;
         } else {
-            val = val.toUpperCase();
+            qrResult.innerHTML = `<p style="color:#d9534f;">${data.error || 'خطأ في التوليد'}</p>`;
         }
-        window.location.href = '/pay/' + val;
-    }
+    })
+    .catch(() => {
+        qrResult.innerHTML = '<p style="color:#d9534f;">فشل الاتصال بالخادم</p>';
+    });
+}
 </script>
 </body>
 </html>

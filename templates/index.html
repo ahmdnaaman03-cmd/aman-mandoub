@@ -2,21 +2,32 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أمان المندوب - بوابة التحصيل</title>
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 50px; background: #f4f4f9; }
-        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block; }
-        input { padding: 10px; width: 200px; border: 1px solid #ccc; border-radius: 5px; }
-        button { padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        body { font-family: sans-serif; background: #f4f6f8; margin: 0; padding: 15px; direction: rtl; }
+        .container { background: white; max-width: 480px; margin: 0 auto; padding: 20px; border-radius: 12px; text-align: center; }
+        input { padding: 12px; width: 80%; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 6px; text-align: center; }
+        button { padding: 12px 20px; background: #008060; color: white; border: none; border-radius: 6px; font-weight: bold; width: 85%; }
+        .badges { background: #e8f5e9; padding: 8px; border-radius: 6px; font-size: 12px; color: #2e7d32; font-weight: bold; margin: 15px 0; }
+        .title { font-size: 14px; font-weight: bold; color: #111; margin-top: 12px; text-align: right; }
+        .text { font-size: 12px; color: #555; text-align: right; margin: 4px 0 10px 0; line-height: 1.4; }
     </style>
-<meta property="og:title" content="أمان المندوب">
-<meta property="og:image" content="https://ahmdnoaman.pythonanywhere.com/static/og-image.png">
 </head>
 <body>
     <div class="container">
         <h2>نظام أمان المندوب</h2>
-        <input type="text" id="orderId" placeholder="أدخل رقم الشحنة">
-        <button onclick="window.location.href='/delegate/' + document.getElementById('orderId').value">عرض QR الكود</button>
+        <input type="text" id="orderId" placeholder="أدخل رقم الشحنة (مثال: 1001)">
+        <button onclick="window.location.href='/pay/' + document.getElementById('orderId').value">توليد الـ QR Code</button>
+        <div class="badges">🔒 اتصال مشفر 256-bit SSL | 💳 بوابة دفع معتمدة</div>
+        <div class="title">⚡ كيف يعمل النظام؟</div>
+        <div class="text">1. ادخل رقم الشحنة واضغط توليد الـ QR.<br>2. يمسح العميل الـ QR بيدفع عبر البوابة الرسمية.<br>3. تتحول حالة الطلب في Shopify إلى <b>Paid</b> فوراً.</div>
+
+        <div class="title">❓ هل يتم حفظ بيانات الكروت أو الفلوس؟</div>
+        <div class="text">لا، الدفع يتم بالكامل عبر بوابة الدفع الرسمية للمتجر، ونحن نلتقط فقط إشعار النجاح لتحديث حالة الطلب.</div>
+
+        <div class="title">❓ هل نحتاج ماكينات POS؟</div>
+        <div class="text">لا، يعمل النظام مباشرة من متصفح موبايل المندوب دون أجهزة إضافية.</div>
     </div>
 </body>
 </html>

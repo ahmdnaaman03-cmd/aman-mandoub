@@ -1,4 +1,4 @@
-cat << 'EOF' > README.md
+
 <p align="center">
   <img src="static/og-image.png" alt="Aman El-Mandoob Logo" width="120">
 </p>
@@ -43,5 +43,5 @@ Aman El-Mandoob is a lightweight, secure dynamic payment gateway simulator and d
 
 ## 👤 Author & Partnership
 Developed by **Ahmed Noaman** — *Shopify Partner | Automated Payment & COD Solutions Developer.*
-EOF
+
 

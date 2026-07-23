@@ -2,6 +2,7 @@ import os
 import sqlite3
 import secrets
 import hashlib
+import urllib.parse
 from flask import Flask, request, jsonify, url_for, render_template
 
 app = Flask(__name__)
@@ -16,7 +17,7 @@ def get_db_connection():
 def init_db():
     if os.path.exists(DB_NAME):
         os.remove(DB_NAME)
-        
+    
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('''
@@ -41,16 +42,36 @@ def init_db():
     ''', sample_orders)
     conn.commit()
     conn.close()
-    print("[-] Secured Database initialized successfully.")
 
 init_db()
 
 @app.route('/')
 def index():
-    conn = get_db_connection()
-    orders = conn.execute('SELECT * FROM orders').fetchall()
-    conn.close()
     return render_template("index.html")
+
+@app.route('/generate_qr', methods=['POST'])
+def generate_qr():
+    order_id = request.form.get('order_id', '').strip()
+    
+    search_id = f"ORD{order_id}" if not order_id.upper().startswith('ORD') else order_id.upper()
+
+    conn = get_db_connection()
+    order = conn.execute('SELECT * FROM orders WHERE order_id = ?', (search_id,)).fetchone()
+    conn.close()
+
+    if order is None:
+        return jsonify({"error": "رقم الطلب غير صحيح أو غير مسجل."}), 404
+
+    token = order['secure_token']
+    customer_pay_url = url_for('customer_view', order_id=search_id, token=token, _external=True)
+    
+    encoded_url = urllib.parse.quote(customer_pay_url)
+    qr_image_url = f"https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={encoded_url}"
+
+    return jsonify({
+        "qr_image": qr_image_url,
+        "message": "تم التوليد بنجاح"
+    })
 
 @app.route('/delegate/<order_id>')
 def delegate_view(order_id):
@@ -62,8 +83,6 @@ def delegate_view(order_id):
     
     token = order['secure_token']
     customer_pay_url = url_for('customer_view', order_id=order_id, token=token, _external=True)
-    
-    # هنا استخدمنا render_template لعرض شاشة المندوب
     return render_template('delegate.html', order_id=order['order_id'], status=order['payment_status'], secure_qr_url=customer_pay_url)
 
 @app.route('/pay/customer/<order_id>')
@@ -79,7 +98,6 @@ def customer_view(order_id):
         return jsonify({"error": "Unauthorized: Invalid or missing secure token."}), 403
         
     confirm_url = url_for('simulate_gateway', order_id=order_id)
-    # هنا استخدمنا render_template لعرض شاشة العميل
     return render_template('customer.html', customer_name=order['customer_name'], amount_to_pay=order['amount'], confirm_url=confirm_url)
 
 @app.route('/pay/simulate-gateway/<order_id>', methods=['POST', 'GET'])
@@ -89,7 +107,7 @@ def simulate_gateway(order_id):
     conn.close()
     if order is None:
         return jsonify({"error": "Order not found"}), 404
-
+        
     data_to_sign = f"{order_id}{SHARED_WEBHOOK_SECRET}"
     signature = hashlib.sha256(data_to_sign.encode()).hexdigest()
     
@@ -118,8 +136,6 @@ def handle_gateway_webhook(payload):
         cursor.execute('UPDATE orders SET payment_status = ? WHERE order_id = ?', ('PAID', order_id))
         conn.commit()
         conn.close()
-        
-        print(f"[!] MERCHANT NOTIFICATION: Order {order_id} is now PAID. Inventory updated.")
         
         return jsonify({
             "status": "processed",

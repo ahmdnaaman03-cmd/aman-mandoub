@@ -1,4 +1,7 @@
-![Aman El-Mandoob Banner](banner.png)
+<p align="center">
+  <img src="banner.png" alt="Aman El-Mandoob Banner" width="100%">
+</p>
+
 
 
   <img src="static/og-image.png" alt="Aman El-Mandoob Logo" width="120">

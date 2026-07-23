@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Checkout | Aman El-Mandoob</title>
+    <meta property="og:title" content="Aman El-Mandoob Secure Checkout">
+    <meta property="og:image" content="{{ url_for('static', filename='og-image.png', _external=True) }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
@@ -11,14 +13,16 @@
         .amount-box { background-color: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; }
         .btn-pay { background-color: #16a34a; color: #fff; font-weight: 700; padding: 14px; border-radius: 10px; border: none; font-size: 1.1rem; }
         .btn-pay:hover { background-color: #15803d; color: #fff; }
+        .brand-logo { max-width: 80px; height: auto; }
     </style>
 </head>
 <body>
     <div class="container px-3">
         <div class="card checkout-card p-4 bg-white">
-            <div class="text-center mb-4">
-                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 mb-2">🔒 Encrypted Payment</span>
+            <div class="text-center mb-3">
+                <img src="{{ url_for('static', filename='og-image.png') }}" alt="Aman El-Mandoob Logo" class="brand-logo mb-2 mx-auto">
                 <h4 class="fw-bold text-dark m-0">Aman El-Mandoob</h4>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 mt-2">🔒 Encrypted Payment</span>
             </div>
 
             <div class="amount-box p-3 text-center mb-4">

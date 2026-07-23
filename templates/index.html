@@ -4,18 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aman El-Mandoob</title>
+    <meta property="og:title" content="Aman El-Mandoob - Instant Payment Gateway">
+    <meta property="og:description" content="Dynamic QR payment gateway and payment confirmation system.">
+    <meta property="og:image" content="{{ url_for('static', filename='og-image.png', _external=True) }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
         .main-card { max-width: 400px; margin: 40px auto; border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
         .btn-main { background-color: #0f172a; color: #fff; font-weight: 600; padding: 14px; border-radius: 10px; border: none; }
         .btn-main:hover { background-color: #1e293b; color: #fff; }
+        .brand-logo { max-width: 80px; height: auto; }
     </style>
 </head>
 <body>
     <div class="container px-3">
         <div class="card main-card p-4 bg-white text-center">
-            <h4 class="fw-bold text-dark mb-1">Aman El-Mandoob 🛡️</h4>
+            <div class="mb-2">
+                <img src="{{ url_for('static', filename='og-image.png') }}" alt="Aman El-Mandoob Logo" class="brand-logo mx-auto">
+            </div>
+            <h4 class="fw-bold text-dark mb-1">Aman El-Mandoob</h4>
             <p class="text-muted small mb-4">Instant Payment Gateway</p>
             
             <form id="qrForm">
@@ -26,17 +33,24 @@
             </form>
 
             <div id="qrDisplay" class="mt-4 d-none">
-                <div class="p-3 border rounded-3 bg-light d-inline-block">
+                <div class="p-3 border rounded-3 bg-light d-inline-block mb-2">
                     <img id="qrImg" src="" alt="Scan QR" class="img-fluid" style="max-width: 230px;">
                 </div>
-                <p class="text-muted small mt-2">Ask customer to scan with phone camera</p>
+                <div id="statusBadge" class="my-2">
+                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-2 fs-6">⏳ Waiting for Payment...</span>
+                </div>
+                <p class="text-muted small">Ask customer to scan with phone camera</p>
             </div>
         </div>
     </div>
 
     <script>
+        let checkInterval = null;
+
         document.getElementById('qrForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            if (checkInterval) clearInterval(checkInterval);
+
             const orderId = document.getElementById('order_id').value;
             const formData = new FormData();
             formData.append('order_id', orderId);
@@ -47,6 +61,24 @@
             if (res.ok) {
                 document.getElementById('qrImg').src = data.qr_image;
                 document.getElementById('qrDisplay').classList.remove('d-none');
+                document.getElementById('statusBadge').innerHTML = `<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-2 fs-6">⏳ Waiting for Payment...</span>`;
+
+                const fullOrderId = data.order_id;
+                
+                checkInterval = setInterval(async () => {
+                    const statusRes = await fetch(`/check_status/${fullOrderId}`);
+                    const statusData = await statusRes.json();
+
+                    if (statusData.status === 'PAID') {
+                        clearInterval(checkInterval);
+                        document.getElementById('statusBadge').innerHTML = `
+                            <div class="alert alert-success border-2 shadow-sm my-2 p-3">
+                                <h5 class="fw-bold m-0 text-success">✅ PAYMENT CONFIRMED!</h5>
+                                <small class="text-dark">Hand over shipment to customer.</small>
+                            </div>
+                        `;
+                    }
+                }, 2000);
             } else {
                 alert(data.error || 'Order Not Found');
             }

@@ -1,18 +1,47 @@
-# Aman El-Mandoub - Secure Payment Orchestration System
+cat << 'EOF' > README.md
+<p align="center">
+  <img src="static/og-image.png" alt="Aman El-Mandoob Logo" width="120">
+</p>
 
-نظام "أمان المندوب" هو حل تقني متكامل لإدارة وتحصيل الدفعات اللوجستية عند الاستلام، مصمم لضمان أقصى درجات الأمان والشفافية.
+# 🛡️ Aman El-Mandoob (أمان المندوب)
+> **Instant Dynamic QR Payment & Dynamic Delivery Sync for Shopify & COD Merchants**
 
-## 🛡️ الطبقات الأمنية (Security Architecture)
-يعتمد النظام على هندسة برمجية متقدمة لضمان سلامة المعاملات:
-- **Sandbox Environment:** محاكاة كاملة لبوابات الدفع تضمن تجربة وتطوير النظام دون مخاطر مالية.
-- **Webhook Security:** نستخدم توقيعات مشفرة بمعيار `SHA-256` عبر مفتاح سري (`SHARED_WEBHOOK_SECRET`) للتأكد من أن كل عملية تحديث لحالة الدفع تأتي من مصدر موثوق.
-- **Data Integrity:** نظام `SQLite` معزول يضمن تحديث حالة الشحنات (من PENDING إلى PAID) بناءً على تحقق رقمي (Validation) قبل إتمام أي سجل مالي.
+Aman El-Mandoob is a lightweight, secure dynamic payment gateway simulator and delivery confirmation tool. It bridges the gap between Cash on Delivery (COD) and instant digital payments for Shopify merchants and e-commerce delivery fleets.
 
-## ⚙️ تدفق العمل (Workflow)
-1. **الترميز:** يقوم المندوب بتوليد QR Code فريد لكل شحنة يحتوي على توكن مشفر.
-2. **التحقق:** عند مسح العميل للكود، يتم التحقق من التوكن عبر قاعدة بياناتنا.
-3. **التأكيد:** بعد الدفع، يرسل النظام "Webhook" داخلياً لتحديث سجل الشحنة فوراً.
-4. **التنبيه:** يتم تحديث حالة الطلب في قاعدة البيانات مع سجل كامل للعملية.
+---
 
-## 🚀 التوجه المستقبلي
-النظام مصمم ليكون جاهزاً للربط المباشر مع بوابات الدفع (Payment Gateways APIs) الحقيقية عبر استبدال وحدة المحاكاة بـ Endpoint خارجي.
+## 🚀 Key Features
+
+- **Shopify API Integration:** Seamlessly syncs orders and payment statuses directly with Shopify stores via Webhooks and REST API.
+- **Dynamic QR Code Generation:** Generates unique, secure QR codes per order instantly.
+- **Secure Tokenization:** Protects customer payment pages with single-use cryptographically generated tokens (`secrets.token_hex`).
+- **Real-Time Payment Polling:** Mandoub (delivery agent) screen automatically updates upon payment completion without manual page refreshes.
+- **Webhook Security (HMAC/SHA-256):** Simulates payment gateway webhooks using HMAC-SHA256 signatures to prevent fraud.
+- **Mobile-First Design:** Fully responsive interface tailored for delivery agents on mobile devices.
+
+---
+
+## 🛍️ Shopify Merchant Workflow
+
+1. Order placed on Shopify Store $\rightarrow$ Synced to Aman El-Mandoob.
+2. Delivery Agent generates dynamic QR at customer location.
+3. Customer scans & pays via mobile browser.
+4. System updates Shopify Admin order status to **PAID** instantly via Webhook.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Backend:** Python / Flask
+- **Integrations:** Shopify Admin API / Webhooks
+- **Database:** SQLite3
+- **Security:** Hashlib (SHA-256), Secrets Tokenization
+- **Frontend:** HTML5, CSS3, JavaScript (Fetch API / Long-Polling)
+- **Deployment:** PythonAnywhere / Linux Alpine (iSH)
+
+---
+
+## 👤 Author & Partnership
+Developed by **Ahmed Noaman** — *Shopify Partner | Automated Payment & COD Solutions Developer.*
+EOF
+

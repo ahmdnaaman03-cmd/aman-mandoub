@@ -1,59 +1,56 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أمان المندوب - الدفع الفوري</title>
+    <title>Aman El-Mandoob</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { font-family: system-ui, sans-serif; background: #f8f9fa; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .box { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; width: 100%; max-width: 400px; box-sizing: border-box; }
-        input { width: 100%; padding: 14px; margin: 15px 0; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; font-size: 16px; outline: none; }
-        input:focus { border-color: #198754; }
-        button { width: 100%; padding: 14px; background: #198754; color: #ffffff; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; }
-        button:hover { background: #157347; }
-        #result { margin-top: 20px; font-size: 15px; }
+        body { background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+        .main-card { max-width: 400px; margin: 40px auto; border-radius: 16px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        .btn-main { background-color: #0f172a; color: #fff; font-weight: 600; padding: 14px; border-radius: 10px; border: none; }
+        .btn-main:hover { background-color: #1e293b; color: #fff; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h2 style="margin: 0; color: #212529;">🛡️ أمان المندوب</h2>
-        <p style="color: #6c757d; font-size: 14px;">توليد كود الدفع السريع</p>
-        
-        <input type="text" id="orderId" placeholder="أدخل رقم الطلب (مثال: 1001)">
-        <button onclick="generate()">توليد QR Code</button>
-        
-        <div id="result"></div>
+    <div class="container px-3">
+        <div class="card main-card p-4 bg-white text-center">
+            <h4 class="fw-bold text-dark mb-1">Aman El-Mandoob 🛡️</h4>
+            <p class="text-muted small mb-4">Instant Payment Gateway</p>
+            
+            <form id="qrForm">
+                <div class="mb-3">
+                    <input type="text" id="order_id" class="form-control form-control-lg text-center fw-bold" placeholder="Enter Order ID (e.g. 1001)" required>
+                </div>
+                <button type="submit" class="btn btn-main w-100">Generate Dynamic QR</button>
+            </form>
+
+            <div id="qrDisplay" class="mt-4 d-none">
+                <div class="p-3 border rounded-3 bg-light d-inline-block">
+                    <img id="qrImg" src="" alt="Scan QR" class="img-fluid" style="max-width: 230px;">
+                </div>
+                <p class="text-muted small mt-2">Ask customer to scan with phone camera</p>
+            </div>
+        </div>
     </div>
 
     <script>
-        function generate() {
-            const oid = document.getElementById('orderId').value.trim();
-            const res = document.getElementById('result');
-            
-            if(!oid) { 
-                res.innerHTML = '<span style="color:#dc3545; font-weight:bold;">الرجاء إدخال رقم الطلب</span>'; 
-                return; 
+        document.getElementById('qrForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const orderId = document.getElementById('order_id').value;
+            const formData = new FormData();
+            formData.append('order_id', orderId);
+
+            const res = await fetch('/generate_qr', { method: 'POST', body: formData });
+            const data = await res.json();
+
+            if (res.ok) {
+                document.getElementById('qrImg').src = data.qr_image;
+                document.getElementById('qrDisplay').classList.remove('d-none');
+            } else {
+                alert(data.error || 'Order Not Found');
             }
-            
-            res.innerHTML = '<span style="color:#6c757d;">جاري الاتصال بالخادم...</span>';
-            
-            fetch('/generate_qr', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: 'order_id=' + encodeURIComponent(oid)
-            })
-            .then(r => r.json())
-            .then(d => {
-                if(d.qr_image) {
-                    res.innerHTML = `<img src="${d.qr_image}" style="max-width:200px; border-radius:8px;"><p style="color:#198754; font-weight:bold;">تم التوليد بنجاح!</p>`;
-                } else {
-                    res.innerHTML = `<span style="color:#dc3545; font-weight:bold;">${d.error || 'خطأ في الاستجابة'}</span>`;
-                }
-            })
-            .catch(() => {
-                res.innerHTML = '<span style="color:#dc3545; font-weight:bold;">فشل الاتصال. الخادم لا يستجيب أو المسار غير موجود.</span>';
-            });
-        }
+        });
     </script>
 </body>
 </html>

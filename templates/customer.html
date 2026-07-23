@@ -1,26 +1,40 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة الدفع الآمنة</title>
+    <title>Secure Checkout | Aman El-Mandoob</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: #eef2f3; margin-top: 50px; }
-        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); display: inline-block; width: 90%; max-width: 400px; }
-        .amount { font-size: 24px; color: #d32f2f; font-weight: bold; }
-        .btn { background-color: #4CAF50; color: white; padding: 15px 20px; border: none; border-radius: 5px; font-size: 18px; cursor: pointer; width: 100%; margin-top: 20px; font-weight: bold; }
-        .btn:hover { background-color: #45a049; }
+        body { background-color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+        .checkout-card { max-width: 420px; margin: 50px auto; border-radius: 16px; border: none; box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+        .amount-box { background-color: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .btn-pay { background-color: #16a34a; color: #fff; font-weight: 700; padding: 14px; border-radius: 10px; border: none; font-size: 1.1rem; }
+        .btn-pay:hover { background-color: #15803d; color: #fff; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>مرحباً {{ customer_name }}</h2>
-        <p>قيمة الشحنة المطلوبة:</p>
-        <p class="amount">{{ amount_to_pay }} ج.م</p>
-        
-        <form action="{{ confirm_url }}" method="POST">
-            <button type="submit" class="btn">تأكيد الدفع وإتمام الطلب</button>
-        </form>
+    <div class="container px-3">
+        <div class="card checkout-card p-4 bg-white">
+            <div class="text-center mb-4">
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 mb-2">🔒 Encrypted Payment</span>
+                <h4 class="fw-bold text-dark m-0">Aman El-Mandoob</h4>
+            </div>
+
+            <div class="amount-box p-3 text-center mb-4">
+                <p class="text-secondary small mb-1 text-uppercase fw-semibold">Total Amount Due</p>
+                <h2 class="fw-extrabold text-dark m-0">{{ "%.2f"|format(amount_to_pay) }} <small class="fs-6 text-muted">EGP</small></h2>
+                <p class="text-muted small mt-2 mb-0">Customer: <strong>{{ customer_name }}</strong></p>
+            </div>
+
+            <form action="{{ confirm_url }}" method="POST">
+                <button type="submit" class="btn btn-pay w-100">Pay Now</button>
+            </form>
+
+            <div class="text-center mt-4">
+                <p class="text-muted small" style="font-size: 0.8rem;">Powered by Aman El-Mandoob Digital Security</p>
+            </div>
+        </div>
     </div>
 </body>
 </html>

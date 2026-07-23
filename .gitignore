@@ -1,2 +1,3 @@
 __pycache__/
 secure_delivery.db
+.env

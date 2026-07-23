@@ -1,6 +1,5 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/ahmdnaaman03-cmd/aman-mandoub/master/banner.png" alt="Aman El-Mandoob Banner" width="100%">
-</p>
+![Aman El-Mandoob Banner](./banner.png)
+
 
 
 

@@ -1,5 +1,4 @@
-
-<p align="center">
+p align="center">
   <img src="static/og-image.png" alt="Aman El-Mandoob Logo" width="120">
 </p>
 

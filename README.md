@@ -17,7 +17,6 @@ Aman El-Mandoob is a lightweight, secure dynamic payment gateway simulator and d
 - **Real-Time Payment Polling:** Mandoub (delivery agent) screen automatically updates upon payment completion without manual page refreshes.
 - **Webhook Security (HMAC/SHA-256):** Simulates payment gateway webhooks using HMAC-SHA256 signatures to prevent fraud.
 - **Mobile-First Design:** Fully responsive interface tailored for delivery agents on mobile devices.
-
 ---
 
 ## 🛍️ Shopify Merchant Workflow

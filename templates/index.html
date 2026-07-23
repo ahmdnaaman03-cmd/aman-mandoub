@@ -3,74 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أمان المندوب - تحصيل الدفعات</title>
+    <title>أمان المندوب - الدفع الفوري</title>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; background-color: #f4f6f8; margin: 0; padding: 20px; direction: rtl; }
-        .container { max-width: 480px; margin: 0 auto; background: #ffffff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center; }
-        .logo { max-width: 80px; margin-bottom: 10px; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        h2, h3 { color: #1a252f; margin-top: 0; }
-        .form-group { margin-bottom: 15px; text-align: right; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; color: #333; }
-        input[type="text"] { width: 100%; padding: 12px; border: 1px solid #cccccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 12px; background-color: #27ae60; color: #ffffff; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        button:hover { background-color: #219150; }
-        #qrResult { text-align: center; margin-top: 20px; min-height: 50px; }
-        .section-box { margin-top: 25px; border-top: 2px solid #eeeeee; padding-top: 15px; text-align: right; }
-        .faq-item { background: #f9f9f9; padding: 12px; border-radius: 6px; margin-bottom: 10px; border-right: 4px solid #27ae60; }
-        .faq-question { font-weight: bold; color: #2c3e50; margin-bottom: 4px; font-size: 15px; }
-        .faq-answer { color: #555555; font-size: 13px; margin: 0; line-height: 1.5; }
+        body { font-family: system-ui, sans-serif; background: #f8f9fa; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .box { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; width: 100%; max-width: 400px; box-sizing: border-box; }
+        input { width: 100%; padding: 14px; margin: 15px 0; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; font-size: 16px; outline: none; }
+        input:focus { border-color: #198754; }
+        button { width: 100%; padding: 14px; background: #198754; color: #ffffff; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        button:hover { background: #157347; }
+        #result { margin-top: 20px; font-size: 15px; }
     </style>
 </head>
 <body>
-<div class="container">
-    <img src="{{ url_for('static', filename='og-image.png') }}" alt="شعار أمان المندوب" class="logo">
-    <h2>أمان المندوب 🛡️</h2>
-    <p style="color:#666; font-size:14px;">توليد كيو آر كود الدفع السريع للعملاء</p>
-
-    <div class="form-group">
-        <label for="orderId">رقم الطلب:</label>
-        <input type="text" id="orderId" placeholder="أدخل الرقم (مثال: 1001)" required>
+    <div class="box">
+        <h2 style="margin: 0; color: #212529;">🛡️ أمان المندوب</h2>
+        <p style="color: #6c757d; font-size: 14px;">توليد كود الدفع السريع</p>
+        
+        <input type="text" id="orderId" placeholder="أدخل رقم الطلب (مثال: 1001)">
+        <button onclick="generate()">توليد QR Code</button>
+        
+        <div id="result"></div>
     </div>
-    <button onclick="generateQR()">توليد الـ QR Code</button>
 
-    <div id="qrResult"></div>
-
-    <div class="section-box">
-        <h3>📖 طريقة الاستخدام</h3>
-        <ol style="padding-right: 20px; color: #444; line-height: 1.6; font-size: 14px;">
-            <li>أدخل رقم الطلب في الخانة أعلاه.</li>
-            <li>اضغط على زر <b>"توليد الـ QR Code"</b>.</li>
-            <li>اعرض الكود للعميل ليقوم بمسحه والدفع.</li>
-        </ol>
-    </div>
-</div>
-
-<script>
-function generateQR() {
-    const orderInput = document.getElementById('orderId').value.trim();
-    const qrResult = document.getElementById('qrResult');
-    if (!orderInput) {
-        qrResult.innerHTML = '<p style="color:#d9534f; font-weight:bold;">يرجى إدخال رقم الطلب أولاً</p>';
-        return;
-    }
-    qrResult.innerHTML = '<p style="color:#666;">جاري توليد الكود...</p>';
-    fetch('/generate_qr', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'order_id=' + encodeURIComponent(orderInput)
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.qr_image) {
-            qrResult.innerHTML = `<img src="${data.qr_image}" alt="QR" style="max-width:200px; margin-top:10px;"><p style="color:#27ae60; font-weight:bold;">تم بنجاح!</p>`;
-        } else {
-            qrResult.innerHTML = `<p style="color:#d9534f;">${data.error || 'خطأ في التوليد'}</p>`;
+    <script>
+        function generate() {
+            const oid = document.getElementById('orderId').value.trim();
+            const res = document.getElementById('result');
+            
+            if(!oid) { 
+                res.innerHTML = '<span style="color:#dc3545; font-weight:bold;">الرجاء إدخال رقم الطلب</span>'; 
+                return; 
+            }
+            
+            res.innerHTML = '<span style="color:#6c757d;">جاري الاتصال بالخادم...</span>';
+            
+            fetch('/generate_qr', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: 'order_id=' + encodeURIComponent(oid)
+            })
+            .then(r => r.json())
+            .then(d => {
+                if(d.qr_image) {
+                    res.innerHTML = `<img src="${d.qr_image}" style="max-width:200px; border-radius:8px;"><p style="color:#198754; font-weight:bold;">تم التوليد بنجاح!</p>`;
+                } else {
+                    res.innerHTML = `<span style="color:#dc3545; font-weight:bold;">${d.error || 'خطأ في الاستجابة'}</span>`;
+                }
+            })
+            .catch(() => {
+                res.innerHTML = '<span style="color:#dc3545; font-weight:bold;">فشل الاتصال. الخادم لا يستجيب أو المسار غير موجود.</span>';
+            });
         }
-    })
-    .catch(() => {
-        qrResult.innerHTML = '<p style="color:#d9534f;">فشل الاتصال بالخادم</p>';
-    });
-}
-</script>
+    </script>
 </body>
 </html>

@@ -27,7 +27,7 @@ def init_db():
         shop_url TEXT PRIMARY KEY, access_token TEXT NOT NULL,
         plan_status TEXT DEFAULT 'PENDING', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
     conn.commit()
-    conn.close()
+    price = row.get('price', 0)
 
 init_db()
 

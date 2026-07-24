@@ -7,8 +7,8 @@ load_dotenv()
 app = Flask(__name__)
 
 DB_NAME = "secure_delivery.db"
-SHOPIFY_API_KEY = os.getenv("SHOPIFY_API_KEY")
-SHOPIFY_API_SECRET = os.getenv("SHOPIFY_API_SECRET")
+SHOPIFY_API_KEY = "8eda1bfb5f4512f4816ea053993f0190"
+SHOPIFY_API_SECRET = "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"
 APP_URL = "https://Ahmdnoaman.pythonanywhere.com"
 
 def get_db_connection():

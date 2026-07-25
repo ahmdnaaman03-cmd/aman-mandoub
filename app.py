@@ -137,7 +137,7 @@ VERIFY_HTML = """
 
 @app.route('/')
 def home():
-    return render_template, render_template_string(DEMO_HTML)
+    return render_template_string(DEMO_HTML)
 
 @app.route('/api/order_status')
 def order_status():
@@ -157,7 +157,7 @@ def verify():
         conn.execute('INSERT OR REPLACE INTO orders (order_id, status) VALUES (?, ?)', (order_id, 'PAID'))
         conn.commit()
         conn.close()
-    return render_template, render_template_string(VERIFY_HTML, order_id=order_id)
+    return render_template_string(VERIFY_HTML, order_id=order_id)
 
 @app.route('/auth')
 def auth():

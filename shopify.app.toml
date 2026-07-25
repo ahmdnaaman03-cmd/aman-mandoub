@@ -1,18 +1,12 @@
 name = "Aman El-Mandoob"
 client_id = "YOUR_CLIENT_ID"
 application_url = "https://ahmdnoaman.pythonanywhere.com/"
-embedded = true
-
-[webhooks]
-api_version = "2026-07"
-
-[privacy_compliance_webhooks]
-customer_data_request_url = "https://ahmdnoaman.pythonanywhere.com/webhooks/customers/data_request"
-customer_deletion_url = "https://ahmdnoaman.pythonanywhere.com/webhooks/customers/redact"
-shop_deletion_url = "https://ahmdnoaman.pythonanywhere.com/webhooks/shop/redact"
-
-[auth]
-redirect_url_allowlist = ["https://ahmdnoaman.pythonanywhere.com/auth/callback"]
+privacy_policy_url = "https://ahmdnoaman.pythonanywhere.com/privacy"
 
 [access_scopes]
 scopes = "read_orders,write_orders,read_products"
+
+[auth]
+redirect_urls = [
+  "https://ahmdnoaman.pythonanywhere.com/auth/callback"
+]

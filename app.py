@@ -32,42 +32,44 @@ def get_db_connection():
 
 DEMO_HTML = """
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أمان المندوب - العرض التجريبي الحي</title>
+    <title>Aman El-Mandoob</title>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; background: #f4f6f8; margin: 0; padding: 20px; text-align: center; }
-        .card { background: white; max-width: 450px; margin: 20px auto; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { color: #1a252c; margin-bottom: 10px; }
-        p { color: #637381; font-size: 14px; }
-        input { width: 85%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; text-align: center; }
-        button { background: #008060; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; width: 90%; }
-        button:hover { background: #006e52; }
-        #qr-result { margin-top: 20px; display: none; }
-        img { width: 180px; height: 180px; border: 1px solid #ddd; padding: 10px; border-radius: 8px; background: #fff; }
-        .status-container { margin-top: 20px; font-size: 15px; color: #333; }
-        .badge { display: inline-block; padding: 8px 16px; border-radius: 20px; font-weight: bold; margin-top: 8px; font-size: 14px; }
-        .pending { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-        .paid { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f6f6f7; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 90vh; }
+        .card { background: white; padding: 30px 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); text-align: center; width: 100%; max-width: 360px; }
+        .logo-box { background: #e6cfb3; width: 60px; height: 38px; margin: 0 auto 12px; border-radius: 4px; display: flex; justify-content: center; align-items: center; }
+        .shield-icon { color: #2e7d32; font-size: 18px; }
+        h2 { margin: 0; font-size: 22px; font-weight: 700; color: #1a1a1a; }
+        .subtitle { color: #6d7175; font-size: 13px; margin-top: 4px; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; border: 1px solid #d2d5d8; border-radius: 8px; font-size: 16px; font-weight: 600; text-align: center; box-sizing: border-box; margin-bottom: 12px; outline: none; }
+        button { width: 100%; background: #1c2434; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        #qr-container { margin-top: 20px; display: none; }
+        .qr-box { border: 1px solid #f0f0f0; border-radius: 12px; padding: 15px; background: #fafafa; display: inline-block; }
+        .qr-box img { width: 210px; height: 210px; display: block; }
+        .badge { display: inline-block; width: 100%; padding: 10px 0; border-radius: 8px; font-weight: 600; font-size: 14px; margin-top: 15px; box-sizing: border-box; }
+        .pending { background: #fdf3d8; color: #5c4200; }
+        .paid { background: #d4edda; color: #155724; }
+        .scan-text { color: #6d7175; font-size: 13px; margin-top: 12px; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2>🛡️ أمان المندوب - Live Demo</h2>
-        <p>أدخل رقم الشحنة لمتابعة حالة الدفع وتوليد الـ QR اللحظي</p>
-        <input type="text" id="orderId" placeholder="أدخل رقم الشحنة (مثال: 1001)">
-        <button onclick="startDemo()">عرض الشحنة والـ QR</button>
+        <div class="logo-box"><span class="shield-icon">🛡️</span></div>
+        <h2>Aman El-Mandoob</h2>
+        <div class="subtitle">Instant Payment Gateway</div>
         
-        <div id="qr-result">
-            <h3>كود التأكيد الخاص بالعميل</h3>
-            <img id="qrImg" src="" alt="QR Code">
-            
-            <div class="status-container">
-                <div>حالة الدفع والاستلام اللحظية:</div>
-                <span id="statusBadge" class="badge pending">⏳ PENDING - بانتظار مسح الكود والدفع</span>
+        <input type="text" id="orderId" value="1002" placeholder="Order ID">
+        <button onclick="generateQR()">Generate Dynamic QR</button>
+        
+        <div id="qr-container">
+            <div class="qr-box">
+                <img id="qrImg" src="" alt="QR Code">
             </div>
+            <div id="statusBadge" class="badge pending">⏳ Waiting for Payment...</div>
+            <div class="scan-text">Ask customer to scan with phone camera</div>
         </div>
     </div>
 
@@ -75,15 +77,15 @@ DEMO_HTML = """
         let currentOrder = "";
         let pollTimer = null;
 
-        function startDemo() {
+        function generateQR() {
             currentOrder = document.getElementById('orderId').value.trim();
-            if(!currentOrder) { alert('برجاء إدخال رقم الشحنة أولاً'); return; }
+            if(!currentOrder) return;
 
             var verifyUrl = "https://Ahmdnoaman.pythonanywhere.com/verify?order=" + encodeURIComponent(currentOrder);
-            var qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(verifyUrl);
+            var qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(verifyUrl);
 
             document.getElementById('qrImg').src = qrUrl;
-            document.getElementById('qr-result').style.display = 'block';
+            document.getElementById('qr-container').style.display = 'block';
 
             checkStatus();
             if(pollTimer) clearInterval(pollTimer);
@@ -98,10 +100,10 @@ DEMO_HTML = """
                     let badge = document.getElementById('statusBadge');
                     if(data.status === 'PAID') {
                         badge.className = 'badge paid';
-                        badge.innerText = '✅ PAID - تم الدفع وتأكيد التسليم بنجاح!';
+                        badge.innerText = '✅ Payment Completed!';
                     } else {
                         badge.className = 'badge pending';
-                        badge.innerText = '⏳ PENDING - بانتظار مسح الكود والدفع';
+                        badge.innerText = '⏳ Waiting for Payment...';
                     }
                 });
         }
@@ -111,23 +113,23 @@ DEMO_HTML = """
 """
 VERIFY_HTML = """
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تأكيد الدفع والاستلام</title>
+    <title>Payment Confirmation</title>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; background: #e8f5e9; text-align: center; padding: 40px 20px; }
-        .card { background: white; max-width: 400px; margin: 0 auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { color: #2e7d32; }
-        p { color: #333; font-size: 16px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #e8f5e9; text-align: center; padding: 40px 20px; }
+        .card { background: white; max-width: 350px; margin: 40px auto; padding: 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h2 { color: #2e7d32; margin-bottom: 10px; }
+        p { color: #444; font-size: 15px; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h1>✅ تم الدفع والتأكيد!</h1>
-        <p>شحنة رقم: <strong>{{ order_id }}</strong></p>
-        <p>تم تسديد المبلغ وتسجيل حالة "تم الاستلام والتسليم" بنجاح في قاعدة البيانات.</p>
+        <h2>✅ Payment Confirmed!</h2>
+        <p>Order ID: <strong>#{{ order_id }}</strong></p>
+        <p>Delivery status updated successfully in system database.</p>
     </div>
 </body>
 </html>
@@ -194,7 +196,7 @@ def billing_confirm():
         conn = get_db_connection()
         conn.execute('UPDATE stores SET plan_status = "ACTIVE" WHERE shop_url = ?', (shop,))
         conn.commit(); conn.close()
-    return "<h1>تمت عملية التثبيت والاشتراك بنجاح!</h1>"
+    return "<h1>Installation & Subscription Completed Successfully!</h1>"
 
 if __name__ == '__main__':
     app.run(debug=True)

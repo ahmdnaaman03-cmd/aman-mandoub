@@ -198,6 +198,15 @@ def billing_confirm():
         conn.commit(); conn.close()
     return "<h1>Installation & Subscription Completed Successfully!</h1>"
 
+
+@app.route('/terms')
+def terms():
+    return render_template('terms.html')
+
+@app.route('/support')
+def support():
+    return render_template('support.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
 

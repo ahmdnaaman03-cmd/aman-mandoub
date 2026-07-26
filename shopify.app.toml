@@ -1,12 +1,12 @@
 name = "Aman El-Mandoob"
-client_id = "YOUR_CLIENT_ID"
-application_url = "https://ahmdnoaman.pythonanywhere.com/"
-privacy_policy_url = "https://ahmdnoaman.pythonanywhere.com/privacy"
+client_id = "8eda1fbf54512f4816ea053993f0190"
+application_url = "https://ahmednoaman.pythonanywhere.com/"
+privacy_policy_url = "https://ahmednoaman.pythonanywhere.com/privacy"
 
 [access_scopes]
 scopes = "read_orders,write_orders,read_products"
 
 [auth]
 redirect_urls = [
-  "https://ahmdnoaman.pythonanywhere.com/auth/callback"
+"https://ahmednoaman.pythonanywhere.com/auth/callback"
 ]
